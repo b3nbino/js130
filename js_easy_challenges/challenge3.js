@@ -5,13 +5,19 @@
 
 class RomanNumeral {
   static NUMERALS = {
-    1: "I",
-    5: "V",
-    10: "X",
-    50: "L",
-    100: "C",
-    500: "D",
     1000: "M",
+    900: "CM",
+    500: "D",
+    400: "CD",
+    100: "C",
+    90: "XC",
+    50: "L",
+    40: "XL",
+    10: "X",
+    9: "IX",
+    5: "V",
+    4: "IV",
+    1: "I",
   };
 
   constructor(num) {
@@ -24,51 +30,23 @@ class RomanNumeral {
 
     for (let i = numStringArr.length - 1; i >= 0; i -= 1) {
       let curr = numStringArr[i];
-      if (curr === 0) continue;
-
-      let stringNum = "";
-
+      if (curr === "0") continue;
       curr = Number(curr + "0".repeat(i));
 
-      while (curr > 0) {
-        let remainder;
-        if (curr % 1000 === 0) {
-          remainder = curr % 1000;
-          curr -= 1000 * remainder;
-          stringNum += RomanNumeral.NUMERALS[1000].repeat(remainder);
-        } else if (curr % 500 === 0) {
-          remainder = curr % 500;
-          curr -= 500 * remainder;
-          stringNum += RomanNumeral.NUMERALS[500];
-        } else if (curr % 100 === 0) {
-          remainder = curr % 100;
-          curr -= 100 * remainder;
-          stringNum += RomanNumeral.NUMERALS[100];
-        } else if (curr % 50 === 0) {
-          remainder = curr % 50;
-          curr -= 50 * remainder;
-          stringNum += RomanNumeral.NUMERALS[50];
-        } else if (curr % 10 === 0) {
-          remainder = curr % 10;
-          curr -= 10 * remainder;
-          stringNum += RomanNumeral.NUMERALS[10];
-        } else if (curr % 5 === 0) {
-          remainder = curr % 5;
-          curr -= 5 * remainder;
-          stringNum += RomanNumeral.NUMERALS[5];
-        } else if (curr % 1 === 0) {
-          remainder = curr % 1;
-          curr -= 1 * remainder;
-          stringNum += RomanNumeral.NUMERALS[1];
-        }
-      }
-
-      result += stringNum;
+      Object.keys(RomanNumeral.NUMERALS)
+        .reverse()
+        .forEach((numeral) => {
+          if (curr >= Number(numeral)) {
+            result += RomanNumeral.NUMERALS[numeral].repeat(
+              Math.floor(curr / Number(numeral))
+            );
+            curr -= Number(numeral) * Math.floor(curr / Number(numeral));
+          }
+        });
     }
 
     return result;
   }
 }
 
-let number = new RomanNumeral(1024);
-console.log(number.toRoman());
+module.exports = RomanNumeral;
